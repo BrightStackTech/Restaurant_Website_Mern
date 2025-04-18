@@ -91,5 +91,5 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 const googleClient = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  `${process.env.BACKEND_URL}/api/auth/google/callback`
+  process.env.GOOGLE_CALLBACK_URL
 ); 
