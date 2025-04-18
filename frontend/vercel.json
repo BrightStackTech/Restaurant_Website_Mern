@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "http://localhost:8000/api/$1" },
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "ignoreCommand": "echo Ignored by Vercel",
+  "outputDirectory": "dist"
+}
