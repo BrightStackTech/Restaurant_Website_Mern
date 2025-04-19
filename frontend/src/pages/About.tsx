@@ -22,7 +22,7 @@ const About = () => {
               className="w-full object-cover"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = 'https://res.cloudinary.com/domckasfk/image/upload/v1744990302/Screenshot_2025-04-18_210126_g9bwwj.png'; 
+                target.src = 'https://res.cloudinary.com/domckasfk/image/upload/v1745098862/WhatsApp_Image_2025-04-20_at_01.12.41_e16022dd_fyqjub.jpg'; 
               }}
             />
           </div>
