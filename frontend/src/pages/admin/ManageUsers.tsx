@@ -152,12 +152,12 @@ const ManageUsers = () => {
                             </span>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900 dark:text-white" onClick={()=>navigate(`/user/${user.name}`)}>{user.name}</div>
+                            <div className="text-sm font-medium text-gray-900 dark:text-white cursor-pointer underline hover:text-primary" onClick={()=>navigate(`/user/${user.name}`)}>{user.name}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <Link to={`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${user.email}`} target='_blank'><div className="text-sm text-gray-900 dark:text-white cursor underline">{user.email}</div></Link>
+                        <Link to={`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${user.email}`} target='_blank'><div className="text-sm text-gray-900 dark:text-white cursor underline hover:text-primary">{user.email}</div></Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 dark:text-white">{formatDate(user.createdAt)}</div>
