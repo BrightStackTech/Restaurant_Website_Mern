@@ -23,7 +23,7 @@ const Payment = () => {
         </p>
         <div className="flex justify-center mb-8">
           <img
-            src="https://res.cloudinary.com/domckasfk/image/upload/v1744503982/PhonePe_frqmxy.png"
+            src="https://res.cloudinary.com/domckasfk/image/upload/v1745098862/WhatsApp_Image_2025-04-20_at_01.17.57_d25b6e4b_aznljs.jpg"
             alt="QR Code"
             className="w-70 h-80 rounded-lg shadow-lg"
           />
