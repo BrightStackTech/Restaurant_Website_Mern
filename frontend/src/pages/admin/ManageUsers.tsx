@@ -5,6 +5,7 @@ import { FaSearch, FaArrowLeft, FaTrash } from 'react-icons/fa';
 import { User, ApiResponse } from '../../types';
 import api from '../../api/config';
 import toast from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 const ManageUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -12,6 +13,7 @@ const ManageUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Fetch users from backend
   useEffect(() => {
@@ -150,7 +152,7 @@ const ManageUsers = () => {
                             </span>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
+                            <div className="text-sm font-medium text-gray-900 dark:text-white" onClick={()=>navigate(`/user/${user.name}`)}>{user.name}</div>
                           </div>
                         </div>
                       </td>
