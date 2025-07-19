@@ -119,14 +119,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   />
                   <span 
                     className={`relative px-3 py-1 text-xs font-medium z-10 transition-all duration-200 w-1/2 text-center ${
-                      isFullPortion ? 'text-white' : 'dark:text-gray-300 text-white'
+                      isFullPortion ? 'text-white' : 'dark:text-gray-300 text-black'
                     }`}
                   >
                     Full
                   </span>
                   <span 
                     className={`relative px-3 py-1 text-xs font-medium z-10 transition-all duration-200 w-1/2 text-center ${
-                      !isFullPortion ? 'text-white' : 'dark:text-gray-300 text-white'
+                      !isFullPortion ? 'text-white' : 'dark:text-gray-300 text-black'
                     }`}
                   >
                     Half
