@@ -107,12 +107,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   checked={isFullPortion}
                   onChange={(e) => setIsFullPortion(e.target.checked)}
                 />
-                <div className="flex items-center bg-gray-300/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[93px] h-[30px]">
+                <div className="flex items-center bg-gray-300/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[95px] h-[30px]">
                   <div
                     className={`absolute h-[26px] rounded-full transition-all duration-300 shadow-lg bg-gradient-to-b from-primary to-primary/90`}
                     style={{
-                      width: '45px',
-                      left: isFullPortion ? '4px' : 'calc(100% - 48px)',
+                      width: '43px',
+                      left: isFullPortion ? '2px' : 'calc(100% - 45px)',
                       transition: 'all 0.3s ease-in-out',
                       boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
                     }}
