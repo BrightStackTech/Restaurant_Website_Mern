@@ -93,13 +93,13 @@ const Profile = () => {
             </button>
           </div>
           {isAdmin ? null : 
-            (
-              <button
-                onClick={() => setShowMore(!showMore)}
-                className="px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-              >
-                {showMore ? 'Hide Options' : 'Show More Options'}
-              </button>
+          (
+            <button
+              onClick={() => setShowMore(!showMore)} // Toggle showMore
+              className="btn hover:bg-gray-400 py-2 px-4 flex items-center justify-center bg-transparent hover:bg-black hover:text-white dark:hover:bg-white text-black dark:text-white dark:hover:text-black border-2 border-black dark:border-white"
+            >
+              {showMore ? 'See Less' : 'See More'}
+            </button>
           )}
           {showMore && ( // Conditionally render the section
             <div className="relative my-6 border-t border-gray-300 dark:border-gray-600 w-full">
