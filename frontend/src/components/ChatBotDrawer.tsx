@@ -89,7 +89,7 @@ const ChatBotDrawer: React.FC<ChatBotDrawerProps> = ({ open, onClose }) => {
     <div className="flex flex-col h-[calc(70vh-56px)] sm:h-[calc(80vh-56px)]">
       {/* Chat area */}
       <div className="flex-1 overflow-y-auto px-4 py-4 text-gray-800 dark:text-gray-100 flex flex-col gap-4">
-        <div className="flex justify-center italic text-gray-600 px-2 py-2">(This chat is meant for fun and isnt associated with any functionality of our site. Also no user chat is geeting saved)</div>
+        <div className="flex justify-center italic text-gray-600 px-2 py-2">(This chat is meant for fun and isnt associated with any functionality of our site. Also no user chat is getting saved)</div>
         {messages.map((msg, idx) => (
           <div
             key={idx}
