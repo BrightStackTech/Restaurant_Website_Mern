@@ -531,7 +531,7 @@ const handleRemoveImage = (image: string) => {
                     checked={isFullPortion}
                     onChange={(e) => setIsFullPortion(e.target.checked)}
                   />
-                  <div className="flex items-center bg-gray-800/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[110px] h-[35px]">
+                  <div className="flex items-center bg-gray-300/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[110px] h-[35px]">
                     <div
                       className={`absolute h-[26px] rounded-full transition-all duration-300 shadow-lg bg-gradient-to-b from-primary to-primary/90`}
                       style={{
@@ -543,14 +543,14 @@ const handleRemoveImage = (image: string) => {
                     />
                     <span 
                       className={`relative px-3 py-1 text-sm font-medium z-10 transition-all duration-200 w-1/2 text-center ${
-                        isFullPortion ? 'text-white' : 'text-gray-300'
+                        isFullPortion ? 'text-white' : 'dark:text-gray-300 text-black'
                       }`}
                     >
                       Full
                     </span>
                     <span 
                       className={`relative px-3 py-1 text-sm font-medium z-10 transition-all duration-200 w-1/2 text-center ${
-                        !isFullPortion ? 'text-white' : 'text-gray-300'
+                        !isFullPortion ? 'text-white' : 'dark:text-gray-300 text-black'
                       }`}
                     >
                       Half
