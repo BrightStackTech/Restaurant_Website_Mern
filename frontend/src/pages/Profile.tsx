@@ -93,7 +93,7 @@ const Profile = () => {
             onClick={() => setShowMore(!showMore)} // Toggle showMore
             className="btn hover:bg-gray-400 py-2 px-4 flex items-center justify-center bg-transparent hover:bg-black hover:text-white dark:hover:bg-white text-black dark:text-white dark:hover:text-black border-2 border-black dark:border-white"
           >
-            See More
+            {showMore ? 'See Less' : 'See More'}
           </button>
           {showMore && ( // Conditionally render the section
             <div className="relative my-6 border-t border-gray-300 dark:border-gray-600 w-full">
