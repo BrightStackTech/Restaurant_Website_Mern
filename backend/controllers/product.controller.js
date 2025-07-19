@@ -10,24 +10,26 @@ cloudinary.config({
 });
 
 exports.createProduct = catchAsync(async (req, res, next) => {
-  // Instead of re-uploading, simply get the URLs from req.files
   let mediaUrls = [];
   
   if (req.files && req.files.length > 0) {
-    // Each file object already contains the Cloudinary URL in file.path
     mediaUrls = req.files.map(file => file.path);
   }
   
-  const { name, price, vegornon, category, description } = req.body;
+  const { name, price, halfPrice, vegornon, category, description } = req.body;
   
   if (!name || !price || !category || !description) {
     return next(new AppError('All fields are required', 400));
   }
 
+  // Convert halfPrice to number or null
+  const convertedHalfPrice = halfPrice ? Number(halfPrice) : null;
+
   const product = await Product.create({
     name,
     description,
-    price,
+    price: Number(price),
+    halfPrice: convertedHalfPrice,
     vegornon,
     category,
     media: mediaUrls
@@ -84,11 +86,34 @@ exports.getProductsByCategory = catchAsync(async (req, res, next) => {
 // @access  Private/Admin
 exports.updateProduct = catchAsync(async (req, res, next) => {
   const updateFields = { ...req.body };
+  
+  // Convert price and halfPrice to numbers
+  if (updateFields.price) {
+    updateFields.price = Number(updateFields.price);
+  }
+  
+  // Handle halfPrice specifically
+  if (updateFields.halfPrice) {
+    updateFields.halfPrice = Number(updateFields.halfPrice);
+  } else if (updateFields.halfPrice === '') {
+    // If halfPrice is empty string, set it to null
+    updateFields.halfPrice = null;
+  }
+
   // If files are sent, add them to the media array
   if (req.files && req.files.length > 0) {
     updateFields.media = req.files.map(file => file.path);
   }
-  const product = await Product.findByIdAndUpdate(req.params.id, updateFields, { new: true, runValidators: true });
+
+  const product = await Product.findByIdAndUpdate(
+    req.params.id, 
+    updateFields, 
+    { 
+      new: true, 
+      runValidators: true 
+    }
+  );
+
   if (!product) {
     return next(new AppError('Product not found', 404));
   }

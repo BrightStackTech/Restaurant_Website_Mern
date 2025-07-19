@@ -31,7 +31,8 @@ import ManageUsers from './pages/admin/ManageUsers'
 import ManageReviews from './pages/admin/ManageReviews'
 import AdminRoute from './components/AdminRoute';
 import AddProduct from './pages/admin/AddProduct';
-import EditProduct from './pages/admin/EditProduct'
+import EditProduct from './pages/admin/EditProduct';
+import ChangeAdminPassword from './pages/admin/ChangeAdminPassword'
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(false);
@@ -131,6 +132,14 @@ function App() {
               element={
                 <AdminRoute>
                   <EditProduct />
+                </AdminRoute>
+              }
+            />
+            <Route 
+              path="/admin/change-admin-password" 
+              element={
+                <AdminRoute>
+                  <ChangeAdminPassword />
                 </AdminRoute>
               }
             />

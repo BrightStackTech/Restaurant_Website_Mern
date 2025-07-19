@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const Product = require('../models/product.model');
 const Review = require('../models/review.model');
+const { catchAsync, AppError } = require('../middleware/error.middleware');
 
 exports.getStats = async (req, res, next) => {
   try {
@@ -91,3 +92,30 @@ exports.getUserGrowthStats = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.changeAdminPassword = catchAsync(async (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+
+  // Check if passwords exist
+  if (!currentPassword || !newPassword) {
+    return next(new AppError('Please provide current and new password', 400));
+  }
+
+  // Get admin user with password
+  const admin = await User.findById(req.user._id).select('+password');
+
+  // Check if current password matches
+  const isMatch = await admin.comparePassword(currentPassword);
+  if (!isMatch) {
+    return next(new AppError('Current password is incorrect', 401));
+  }
+
+  // Update password
+  admin.password = newPassword;
+  await admin.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Admin password updated successfully'
+  });
+});

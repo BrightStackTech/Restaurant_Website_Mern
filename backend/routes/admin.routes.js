@@ -12,4 +12,7 @@ router.get('/stats', adminController.getStats);
 // ADD THIS LINE:
 router.get('/user-growth', adminController.getUserGrowthStats);
 
+// Add this with other protected routes
+router.put('/change-admin-password', protect, restrictTo('admin'), adminController.changeAdminPassword);
+
 module.exports = router;

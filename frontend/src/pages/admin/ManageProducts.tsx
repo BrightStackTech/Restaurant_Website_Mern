@@ -107,7 +107,7 @@ const ManageProducts = () => {
           </div>
           <button
             onClick={() => navigate("/admin/add-product")}
-            className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 flex items-center"
+            className="bg-primary-600 dark:text-white px-4 py-2 rounded-md hover:bg-primary-700 flex items-center"
           >
             <FaPlus className="mr-2" /> Add New Product
           </button>
@@ -194,7 +194,8 @@ const ManageProducts = () => {
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Full Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Half Price</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Veg/Non-Veg</th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
@@ -235,6 +236,15 @@ const ManageProducts = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        {product.halfPrice ? (
+                          `₹${product.halfPrice.toFixed(2)}`
+                        ) : (
+                          <span className="text-gray-500 dark:text-gray-400 text-xs">Not available</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200">
                         {product.category.charAt(0).toUpperCase() +
                           product.category.slice(1)}
@@ -255,10 +265,10 @@ const ManageProducts = () => {
                           : ''}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-lg font-medium">
                       <button
                         onClick={() => navigate(`/admin/edit-product/${product._id}`)}
-                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 mr-3"
+                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 mr-5"
                         title="Edit Product"
                       >
                         <FaEdit />

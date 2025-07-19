@@ -401,7 +401,7 @@ const handleSaveCropped = async () => {
             </div>
             <div className="flex justify-end mt-4 space-x-2">
               <button
-                onClick={() => navigate("/change-password")}
+                onClick={() => navigate(user.isAdmin ? "/admin/change-admin-password" : "/change-password")}
                 className="w-full btn hover:bg-gray-400 py-3 flex items-center justify-center bg-transparent hover:bg-red-700 hover:text-white dark:hover:bg-red-700 text-black dark:text-white dark:hover:text-white border-2 border-red-900 dark:border-red-800"
               >
                 Change Password

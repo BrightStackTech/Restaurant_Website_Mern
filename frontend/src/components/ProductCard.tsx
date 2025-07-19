@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FaStar, FaArrowRight } from 'react-icons/fa';
 import { Product, Rating } from '../types';
+import { useState } from 'react';
 
 // Define a union type that accommodates both formats
 type ProductCardType = (Product | {
@@ -9,6 +10,7 @@ type ProductCardType = (Product | {
   name: string;
   description: string;
   price: number;
+  halfPrice?: number;
   image: string;
   media?: string[];
   rating?: number;
@@ -31,6 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showCategory = false,
   linkToDetail = true,
 }) => {
+  const [isFullPortion, setIsFullPortion] = useState(true);
   // Handle both Home page product format and Menu page product format
   const productId =
     'id' in product && product.id
@@ -71,26 +74,65 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="p-6">
         <div className="flex justify-between items-center mb-2">
           <h3 className="font-semibold text-lg">{product.name}</h3>
-          <span className="text-primary font-medium">₹{product.price.toFixed(2)}</span>
+          <span className="text-primary font-medium">
+            ₹{(isFullPortion ? product.price : (product.halfPrice || product.price)).toFixed(2)}
+          </span>
         </div>
 
         {(showCategory && product.category) || product.vegornon ? (
-          <div className="mb-2 flex space-x-2">
-            {showCategory && product.category && (
-              <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full">
-                {product.category}
-              </span>
-            )}
-            {product.vegornon && (
-              <span
-                className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
-                  product.vegornon.toLowerCase() === 'veg'
-                    ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-300'
-                    : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-300'
-                }`}
-              >
-                {product.vegornon.toLowerCase() === 'veg' ? 'Veg' : 'Non-Veg'}
-              </span>
+          <div className="mb-2 flex items-center justify-between">
+            <div className="flex items-center space-x-2">{/* New wrapper div for left items */}
+              {showCategory && product.category && (
+                <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full">
+                  {product.category}
+                </span>
+              )}
+              {product.vegornon && (
+                <span
+                  className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${
+                    product.vegornon.toLowerCase() === 'veg'
+                      ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-300'
+                  }`}
+                >
+                  {product.vegornon.toLowerCase() === 'veg' ? 'Veg' : 'Non-Veg'}
+                </span>
+              )}
+            </div>
+            {product.halfPrice && (
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={isFullPortion}
+                  onChange={(e) => setIsFullPortion(e.target.checked)}
+                />
+                <div className="flex items-center bg-gray-800/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[93px] h-[30px]">
+                  <div
+                    className={`absolute h-[26px] rounded-full transition-all duration-300 shadow-lg bg-gradient-to-b from-primary to-primary/90`}
+                    style={{
+                      width: '45px',
+                      left: isFullPortion ? '2px' : 'calc(100% - 45px)',
+                      transition: 'all 0.3s ease-in-out',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                    }}
+                  />
+                  <span 
+                    className={`relative px-3 py-1 text-xs font-medium z-10 transition-all duration-200 w-1/2 text-center ${
+                      isFullPortion ? 'text-white' : 'text-gray-300'
+                    }`}
+                  >
+                    Full
+                  </span>
+                  <span 
+                    className={`relative px-3 py-1 text-xs font-medium z-10 transition-all duration-200 w-1/2 text-center ${
+                      !isFullPortion ? 'text-white' : 'text-gray-300'
+                    }`}
+                  >
+                    Half
+                  </span>
+                </div>
+              </label>
             )}
           </div>
         ) : null}

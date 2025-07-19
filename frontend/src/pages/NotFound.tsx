@@ -18,7 +18,7 @@ const NotFound = () => {
         <div className="flex justify-center space-x-4">
           <Link
             to="/"
-            className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+            className="px-6 py-2 bg-primary-600 dark:text-white rounded-md hover:bg-primary-700 transition"
           >
             Go Home
           </Link>

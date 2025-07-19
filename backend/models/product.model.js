@@ -17,6 +17,11 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Please add a price'],
     min: [0, 'Price must be a positive number']
   },
+  halfPrice: {
+    type: Number,
+    min: [0, 'Half price must be a positive number'],
+    default: null
+  },
   media: [{
     type: String,
     default: 'default-product.jpg'

@@ -26,6 +26,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  halfPrice: number | null; // <-- add this line
   category: string;
   image: string;
   media?: string[]; 

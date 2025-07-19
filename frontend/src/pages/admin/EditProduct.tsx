@@ -26,6 +26,7 @@ const EditProduct = () => {
   const [productData, setProductData] = useState({
     name: '',
     price: '',
+    halfPrice: '',
     vegornon: 'veg',
     category: categoryOptions[0].value,
     description: ''
@@ -46,6 +47,7 @@ const EditProduct = () => {
           setProductData({
             name: prod.name,
             price: prod.price.toString(),
+            halfPrice: prod.halfPrice ? prod.halfPrice.toString() : '',
             vegornon: prod.vegornon || 'veg',
             category: prod.category,
             description: prod.description,
@@ -96,6 +98,9 @@ const EditProduct = () => {
             // Append text fields to formData
             formData.append('name', productData.name);
             formData.append('price', productData.price);
+            if (productData.halfPrice) {
+              formData.append('halfPrice', productData.halfPrice);
+            }
             formData.append('vegornon', productData.vegornon);
             formData.append('category', productData.category);
             formData.append('description', productData.description);
@@ -203,9 +208,9 @@ const EditProduct = () => {
             <button
                 type="button"
                 onClick={triggerFileInput}
-                className="w-64 h-64 bg-primary-600 text-white border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center hover:bg-primary-700 flex-shrink-0"
+                className="w-64 h-64 bg-primary-600 text-gray-700 dark:text-white border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center hover:bg-primary-700 flex-shrink-0"
             >
-                <span className="text-2xl mr-2"><FaPlus/></span>
+                <span className="text-2xl mr-2 text-gray-700 dark:text-white"><FaPlus/></span>
                 Upload
             </button>
             </div>
@@ -234,20 +239,41 @@ const EditProduct = () => {
           />
         </div>
 
-        {/* Product Price */}
-        <div>
-          <label className="block text-gray-700 dark:text-gray-300 mb-2">Product Price</label>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-300">₹</span>
-            <input
-              type="text"
-              name="price"
-              value={productData.price}
-              onChange={handleInputChange}
-              className="w-full border border-gray-300 p-2 pl-8 rounded bg-transparent"
-              placeholder="Enter price"
-              required
-            />
+        {/* Product Prices - Using Grid for side by side layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Full Price */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-2">Product Price (Full)</label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-300">₹</span>
+              <input
+                type="text"
+                name="price"
+                value={productData.price}
+                onChange={handleInputChange}
+                className="w-full border border-gray-300 p-2 pl-8 rounded bg-transparent"
+                placeholder="Enter price"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Half Price - Optional */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-2">
+              Half Price <span className="text-gray-500 text-sm">(Optional)</span>
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-300">₹</span>
+              <input
+                type="text"
+                name="halfPrice"
+                value={productData.halfPrice || ''}
+                onChange={handleInputChange}
+                className="w-full border border-gray-300 p-2 pl-8 rounded bg-transparent"
+                placeholder="Enter half price (optional)"
+              />
+            </div>
           </div>
         </div>
 

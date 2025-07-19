@@ -21,12 +21,14 @@ const categoryOptions = [
   { value: 'beverages', label: 'Beverages' },
 ];
 
+
 const AddProduct = () => {
   const navigate = useNavigate();
   // Set default category to first option to prevent empty validation error.
   const [productData, setProductData] = useState({
     name: '',
     price: '',
+    halfPrice: '',
     vegornon: 'veg',
     category: categoryOptions[0].value,
     description: ''
@@ -58,36 +60,40 @@ const AddProduct = () => {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+      e.preventDefault();
+      setIsSubmitting(true);
 
-    try {
-      const formData = new FormData();
-      mediaFiles.forEach(file => {
-        if (file) formData.append('media', file);
-      });
-      formData.append('name', productData.name);
-      formData.append('price', productData.price);
-      formData.append('vegornon', productData.vegornon);
-      formData.append('category', productData.category);
-      formData.append('description', productData.description);
-      
-      const response = await api.post('/products', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      try {
+        const formData = new FormData();
+        mediaFiles.forEach(file => {
+          if (file) formData.append('media', file);
+        });
+        formData.append('name', productData.name);
+        formData.append('price', productData.price);
+        // Add halfPrice to formData if it exists
+        if (productData.halfPrice) {
+          formData.append('halfPrice', productData.halfPrice);
+        }
+        formData.append('vegornon', productData.vegornon);
+        formData.append('category', productData.category);
+        formData.append('description', productData.description);
+        
+        const response = await api.post('/products', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
 
-      if (response.data.success) {
-        toast.success('Product added successfully!');
-        navigate('/admin/products');
-      } else {
-        throw new Error(response.data.message || 'Failed to add product');
+        if (response.data.success) {
+          toast.success('Product added successfully!');
+          navigate('/admin/products');
+        } else {
+          throw new Error(response.data.message || 'Failed to add product');
+        }
+      } catch (error: any) {
+        toast.error(error.message || 'An error occurred');
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    };
 
   return (
       <div className="container mx-auto px-4 py-8 mt-12">
@@ -139,8 +145,8 @@ const AddProduct = () => {
                 onClick={triggerFileInput}
                 className="w-64 h-64 bg-primary-600 text-white border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center hover:bg-primary-700 flex-shrink-0"
               >
-                <FaPlus size={34} className="text-white" />
-                <span className="ml-2 text-xl">Upload</span>
+                <FaPlus size={34} className="text-gray-700 dark:text-white" />
+                <span className="text-gray-700 dark:text-white ml-2 text-xl">Upload</span>
               </button>
             </div>
           </div>
@@ -169,22 +175,41 @@ const AddProduct = () => {
           />
         </div>
 
-        {/* Product Price */}
-        <div>
-          <label className="block text-gray-700 dark:text-gray-300 mb-2">Product Price</label>
-          <div className="relative">
-            {/* Rupee Symbol */}
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-300">₹</span>
-            {/* Input Field */}
-            <input
-              type="text" // Using text to avoid up/down arrows
-              name="price"
-              value={productData.price}
-              onChange={handleInputChange}
-              className="w-full border border-gray-300 p-2 pl-8 rounded bg-transparent"
-              placeholder="Enter price"
-              required
-            />
+        {/* Product Prices - Using Grid for side by side layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Full Price */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-2">Product Price (Full)</label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-300">₹</span>
+              <input
+                type="text"
+                name="price"
+                value={productData.price}
+                onChange={handleInputChange}
+                className="w-full border border-gray-300 p-2 pl-8 rounded bg-transparent"
+                placeholder="Enter price"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Half Price - Optional */}
+          <div>
+            <label className="block text-gray-700 dark:text-gray-300 mb-2">
+              Half Price <span className="text-gray-500 text-sm">(Optional)</span>
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-300">₹</span>
+              <input
+                type="text"
+                name="halfPrice"
+                value={productData.halfPrice || ''}
+                onChange={handleInputChange}
+                className="w-full border border-gray-300 p-2 pl-8 rounded bg-transparent"
+                placeholder="Enter half price (optional)"
+              />
+            </div>
           </div>
         </div>
 

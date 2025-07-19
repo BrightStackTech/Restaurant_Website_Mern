@@ -33,7 +33,7 @@ const TopProductCard: React.FC<TopProductCardProps> = ({ product }) => {
             }}
         />
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-50 p-6"> <h2 className="text-xl font-bold mb-4 dark:text-white">Top Rated Product for this month</h2></div>
+      <div className="absolute inset-0 bg-black bg-opacity-50 p-6"> <h2 className="text-xl font-bold mb-4 text-white">Top Rated Product for this month</h2></div>
       {/* Content */}
       <div className="relative z-10 p-6 text-white">
         {/* Title */}

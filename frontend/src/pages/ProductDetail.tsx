@@ -33,6 +33,7 @@ const ProductDetail = () => {
 
   const [selectedRating, setSelectedRating] = useState<number>(0);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState<boolean>(false);
+  const [isFullPortion, setIsFullPortion] = useState<boolean>(true);
   const navigate = useNavigate();
   const [review, setReview] = useState('');
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
@@ -435,7 +436,7 @@ const handleRemoveImage = (image: string) => {
         
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Product Image */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden relative w-auto h-[500px]">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden relative w-auto h-[550px]">
             {(() => {
               console.log('Current media URL:', mediaSrc);
               console.log('isVideo(mediaSrc):', isVideo(mediaSrc));
@@ -517,8 +518,47 @@ const handleRemoveImage = (image: string) => {
             </div>
             
             <div className="text-2xl font-bold text-primary-600 mb-4">
-              ₹{product.price.toFixed(2)}
+              ₹{(isFullPortion ? product.price : (product.halfPrice || product.price)).toFixed(2)}
             </div>
+
+            {/* Only show toggle if halfPrice exists */}
+            {product.halfPrice && (
+              <div className="mb-4">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={isFullPortion}
+                    onChange={(e) => setIsFullPortion(e.target.checked)}
+                  />
+                  <div className="flex items-center bg-gray-800/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[110px] h-[35px]">
+                    <div
+                      className={`absolute h-[26px] rounded-full transition-all duration-300 shadow-lg bg-gradient-to-b from-primary to-primary/90`}
+                      style={{
+                        width: '48px',
+                        left: isFullPortion ? '4px' : 'calc(100% - 53px)',
+                        transition: 'all 0.3s ease-in-out',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                      }}
+                    />
+                    <span 
+                      className={`relative px-3 py-1 text-sm font-medium z-10 transition-all duration-200 w-1/2 text-center ${
+                        isFullPortion ? 'text-white' : 'text-gray-300'
+                      }`}
+                    >
+                      Full
+                    </span>
+                    <span 
+                      className={`relative px-3 py-1 text-sm font-medium z-10 transition-all duration-200 w-1/2 text-center ${
+                        !isFullPortion ? 'text-white' : 'text-gray-300'
+                      }`}
+                    >
+                      Half
+                    </span>
+                  </div>
+                </label>
+              </div>
+            )}
             
             <p className="text-gray-600 dark:text-gray-300 mb-6">
               {product.description}
