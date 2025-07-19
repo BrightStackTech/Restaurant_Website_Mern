@@ -112,7 +112,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     className={`absolute h-[26px] rounded-full transition-all duration-300 shadow-lg bg-gradient-to-b from-primary to-primary/90`}
                     style={{
                       width: '45px',
-                      left: isFullPortion ? '2px' : 'calc(100% - 45px)',
+                      left: isFullPortion ? '4px' : 'calc(100% - 48px)',
                       transition: 'all 0.3s ease-in-out',
                       boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
                     }}
