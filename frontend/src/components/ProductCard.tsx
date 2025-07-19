@@ -74,7 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="p-6">
         <div className="flex justify-between items-center mb-2">
           <h3 className="font-semibold text-lg">{product.name}</h3>
-          <span className="text-primary font-medium">
+          <span className="text-black dark:text-primary font-medium">
             ₹{(isFullPortion ? product.price : (product.halfPrice || product.price)).toFixed(2)}
           </span>
         </div>
@@ -107,7 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   checked={isFullPortion}
                   onChange={(e) => setIsFullPortion(e.target.checked)}
                 />
-                <div className="flex items-center bg-gray-200/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[93px] h-[30px]">
+                <div className="flex items-center bg-gray-300/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[93px] h-[30px]">
                   <div
                     className={`absolute h-[26px] rounded-full transition-all duration-300 shadow-lg bg-gradient-to-b from-primary to-primary/90`}
                     style={{
