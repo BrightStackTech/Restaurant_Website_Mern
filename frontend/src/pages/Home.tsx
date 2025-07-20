@@ -74,10 +74,37 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        <button 
+          onClick={() => {
+            document.querySelector('#featured-section')?.scrollIntoView({ 
+              behavior: 'smooth'
+            });
+          }}
+          className="absolute bottom-[125px] left-1/2 -translate-x-1/2 z-20 p-2 border border-2 border-white rounded-full group hover:bg-white transition-all duration-300 hover:text-gray-900 "
+          aria-label="Scroll to featured section"
+        >
+          <div className="flex items-center">
+            <svg 
+              className="w-8 h-8 transition-all duration-300 group-hover:w-4 group-hover:h-4 group-hover:mr-2 animate-bounce" 
+              fill="none" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth="2" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+            <span className="max-w-0 overflow-hidden whitespace-nowrap transition-all duration-300 group-hover:max-w-[100px]">
+              Scroll Down
+            </span>
+          </div>
+        </button>
       </section>
       
       {/* Featured Products */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section id="featured-section" className="py-20 bg-gray-50 dark:bg-gray-800">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Explore Dishes</h2>
