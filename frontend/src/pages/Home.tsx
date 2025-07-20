@@ -142,7 +142,7 @@ const Home = () => {
               
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <span className="text-3xl font-bold text-primary">15+</span>
+                  <span className="text-3xl font-bold text-primary">25+</span>
                   <span className="text-gray-600 dark:text-gray-400">Years Experience</span>
                 </div>
                 <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
