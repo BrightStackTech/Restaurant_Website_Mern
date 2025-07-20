@@ -23,6 +23,7 @@ import ChangePassword from './pages/ChangePassword'
 import ResetPassword from './pages/ResetPassword';
 import EditProfile from './pages/EditProfile';
 import PublicProfile from './pages/PublicProfile';
+import ScrollToTop from './components/ScrollToTop';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard'
@@ -67,6 +68,7 @@ function App() {
         <Toaster position="top-center" />
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         <main className="flex-grow">
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />
