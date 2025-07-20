@@ -112,9 +112,9 @@ const ManageProducts = () => {
   };
 
   // Filter products based on search term and category
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = orderedProducts.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || product.category.toLowerCase() === selectedCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -217,7 +217,9 @@ const ManageProducts = () => {
               <Select
                 options={categoryOptions}
                 value={categoryOptions.find(option => option.value === selectedCategory)}
-                onChange={option => setSelectedCategory(option?.value || 'all')}
+                onChange={(option) => {
+                  setSelectedCategory(option?.value || 'all');
+                }}
                 className="lg:w-[200px] w-full"
                 classNamePrefix="react-select"
                 placeholder="Filter by category"
@@ -314,7 +316,7 @@ const ManageProducts = () => {
                         ref={provided.innerRef}
                         className="divide-y divide-gray-200 dark:divide-gray-700"
                       >
-                        {orderedProducts.map((product, index) => (
+                        {filteredProducts.map((product, index) => (
                           <Draggable key={product._id} draggableId={product._id} index={index}>
                             {(provided, snapshot) => (
                               <tr
