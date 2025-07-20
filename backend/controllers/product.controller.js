@@ -139,13 +139,32 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Product not found', 404));
   }
 
-  await product.deleteOne();
+  try {
+    // Delete all ratings associated with this product
+    await mongoose.model('Rating').deleteMany({ product: product._id });
 
-  res.status(200).json({
-    success: true,
-    data: {}
-  });
-}); 
+    // Delete all reviews and their replies associated with this product
+    const reviews = await mongoose.model('Review').find({ product: product._id });
+    
+    // Delete replies for each review
+    for (const review of reviews) {
+      await mongoose.model('Reply').deleteMany({ review: review._id });
+    }
+    
+    // Delete the reviews
+    await mongoose.model('Review').deleteMany({ product: product._id });
+
+    // Finally delete the product
+    await product.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: 'Product and all associated data deleted successfully'
+    });
+  } catch (error) {
+    return next(new AppError('Error deleting product and associated data', 500));
+  }
+});
 
 exports.updateProductsOrder = catchAsync(async (req, res, next) => {
   const { updates } = req.body; // Array of { id, order }

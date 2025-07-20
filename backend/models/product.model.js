@@ -66,4 +66,26 @@ const productSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
+productSchema.pre('deleteOne', { document: true, query: false }, async function(next) {
+  try {
+    // Delete all ratings
+    await mongoose.model('Rating').deleteMany({ product: this._id });
+
+    // Get all reviews
+    const reviews = await mongoose.model('Review').find({ product: this._id });
+    
+    // Delete all replies to these reviews
+    for (const review of reviews) {
+      await mongoose.model('Reply').deleteMany({ review: review._id });
+    }
+    
+    // Delete all reviews
+    await mongoose.model('Review').deleteMany({ product: this._id });
+
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = mongoose.model('Product', productSchema);
