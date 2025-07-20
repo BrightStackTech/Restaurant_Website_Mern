@@ -109,7 +109,7 @@ const About = () => {
               />
               <h2 className="text-2xl font-bold mb-2 text-center text-black dark:text-white">Hi, myself Yog</h2>
               <p className="italic text-gray-500 text-center mb-6">
-                A recent graduate, fond of making amazing cool looking, dynamic websites using React.js, Node.js, Express.js and MongoDB. Currently unemployed and is in search for a Job.
+                A recent I.T. graduate, fond of making amazing cool looking, dynamic websites using React.js, Node.js, Express.js and MongoDB. Currently unemployed and is in search for a Job.
               </p>
               <div className="flex flex-col space-y-3 w-full">
                 <a
