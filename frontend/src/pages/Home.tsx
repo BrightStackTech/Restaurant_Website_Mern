@@ -86,7 +86,7 @@ const Home = () => {
         >
           <div className="flex items-center">
             <svg 
-              className="w-8 h-8 transition-all duration-300 group-hover:w-4 group-hover:h-4 group-hover:mr-2 animate-bounce" 
+              className="w-8 h-8 text-white hover:text-gray-900 transition-all duration-300 group-hover:w-4 group-hover:h-4 group-hover:mr-2 animate-bounce" 
               fill="none" 
               strokeLinecap="round" 
               strokeLinejoin="round" 
