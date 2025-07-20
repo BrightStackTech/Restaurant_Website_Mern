@@ -81,7 +81,7 @@ const Home = () => {
               behavior: 'smooth'
             });
           }}
-          className="absolute bottom-[125px] left-1/2 -translate-x-1/2 z-20 p-2 border border-2 border-white rounded-full group hover:bg-white transition-all duration-300 hover:text-gray-900 "
+          className="absolute bottom-[15%] left-1/2 -translate-x-1/2 z-20 p-2 border border-2 border-white rounded-full group hover:bg-white transition-all duration-300 hover:text-gray-900 "
           aria-label="Scroll to featured section"
         >
           <div className="flex items-center">
