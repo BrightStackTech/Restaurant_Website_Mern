@@ -41,7 +41,7 @@ const Home = () => {
 
 
   return (
-    <div className="pt-16">
+    <div className="md:pt-16 pt-0">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center">
         <div className="absolute inset-0 z-0">
@@ -81,7 +81,7 @@ const Home = () => {
               behavior: 'smooth'
             });
           }}
-          className="absolute bottom-[125px] left-1/2 -translate-x-1/2 z-20 p-2 border border-2 border-white rounded-full group hover:bg-white transition-all duration-300 hover:text-gray-900 "
+          className="absolute md:bottom-[125px] bottom-[75px] left-1/2 -translate-x-1/2 z-20 p-2 border border-2 border-white rounded-full group hover:bg-white transition-all duration-300 hover:text-gray-900 "
           aria-label="Scroll to featured section"
         >
           <div className="flex items-center">
