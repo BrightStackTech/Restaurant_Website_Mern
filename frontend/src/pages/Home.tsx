@@ -19,9 +19,15 @@ const Home = () => {
       try {
         setLoading(true);
         const response = await getAllProducts();
-        // Optionally filter featured products if needed,
-        // for now we assume all products are featured
-        setFeaturedProducts(response.data || []);
+        if (response.success && response.data) {
+          // Filter featured products and sort them by order
+          const featured = response.data
+            .filter(product => product.featured)
+            .sort((a, b) => (a.order || 0) - (b.order || 0));
+          setFeaturedProducts(featured);
+        } else {
+          toast.error('Failed to load featured dishes');
+        }
       } catch (error) {
         console.error('Error fetching products:', error);
         toast.error('Failed to load featured dishes');
@@ -32,6 +38,8 @@ const Home = () => {
 
     fetchFeaturedProducts();
   }, []);
+
+
   return (
     <div className="pt-16">
       {/* Hero Section */}
@@ -88,13 +96,17 @@ const Home = () => {
             </div>
           ) : (
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              {featuredProducts.slice(0, 4).map((product) => (
-                <ProductCard key={product._id} product={product} />
+              {featuredProducts.map((product) => (
+                <ProductCard 
+                  key={product._id} 
+                  product={product}
+                  showCategory={true}
+                />
               ))}
             </motion.div>
           )}

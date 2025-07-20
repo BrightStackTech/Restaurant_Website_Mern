@@ -7,16 +7,16 @@ const router = express.Router();
 
 // PUBLIC ROUTES
 router.get('/', productController.getAllProducts);
-
-// Add a public route for products by category:
 router.get('/category/:category', productController.getProductsByCategory);
-
-// Public route for a single product
 router.get('/:id', productController.getProduct);
 
 // PROTECTED ROUTES (admin only)
 router.use(protect);
 router.use(restrictTo('admin'));
+
+router.put('/reorder', productController.updateProductsOrder);
+
+router.put('/:id/toggle-featured', productController.toggleFeatured);
 
 router.post('/', upload.uploadProductMedia, productController.createProduct);
 router.route('/:id')

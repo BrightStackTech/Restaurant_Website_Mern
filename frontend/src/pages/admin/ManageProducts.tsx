@@ -7,6 +7,11 @@ import { Product } from '../../types';
 import { toast } from 'react-hot-toast';
 import Select from 'react-select';
 import { deleteProduct } from '../../api/products.service';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { GrDrag } from 'react-icons/gr';
+import api from '../../api/config';
+import { Switch } from '@headlessui/react';
+
 
 const ManageProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,6 +22,8 @@ const ManageProducts = () => {
   const [currentProduct, _setCurrentProduct] = useState<Product | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const [orderedProducts, setOrderedProducts] = useState<Product[]>([]);
+  const [featuredCount, setFeaturedCount] = useState(0);
   const navigate = useNavigate();
 
   // Mock data for categories - replace with actual categories if needed
@@ -35,7 +42,10 @@ const ManageProducts = () => {
         setIsLoading(true);
         const response = await getAllProducts();
         if (response.success && response.data) {
-          setProducts(response.data);
+          // Sort by order value ascending (lowest to highest)
+          const sortedProducts = [...response.data].sort((a, b) => (a.order || 0) - (b.order || 0));
+          setProducts(sortedProducts);
+          setOrderedProducts(sortedProducts);
         } else {
           toast.error("Failed to fetch products");
         }
@@ -49,6 +59,58 @@ const ManageProducts = () => {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getAllProducts();
+        if (response.success && response.data) {
+          const sortedProducts = [...response.data].sort((a, b) => (a.order || 0) - (b.order || 0));
+          setProducts(sortedProducts);
+          setOrderedProducts(sortedProducts);
+        } else {
+          toast.error("Failed to fetch products");
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        toast.error("Error fetching products");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination) return;
+
+    const items = Array.from(orderedProducts);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Update local state
+    setOrderedProducts(items);
+
+    // Prepare updates for backend
+    const updates = items.map((item, index) => ({
+      id: item._id,
+      order: index
+    }));
+
+    try {
+      // Update order in backend
+      const response = await api.put('/products/reorder', { updates });
+      if (!response.data.success) {
+        throw new Error('Failed to update order');
+      }
+    } catch (error) {
+      toast.error('Failed to update product order');
+      // Revert to previous order on error
+      setOrderedProducts(products);
+    }
+  };
 
   // Filter products based on search term and category
   const filteredProducts = products.filter(product => {
@@ -88,6 +150,39 @@ const ManageProducts = () => {
     setIsDeleting(false);
     setProductToDelete(null);
   };
+
+  const handleFeaturedToggle = async (productId: string, currentValue: boolean) => {
+    try {
+      // Send the current state we want to set (not the inverse)
+      const response = await api.put(`/products/${productId}/toggle-featured`, {
+        featured: currentValue
+      });
+
+      if (response.data.success) {
+        const updatedProducts = orderedProducts.map(p => 
+          p._id === productId ? { ...p, featured: currentValue } : p
+        );
+        setOrderedProducts(updatedProducts);
+        setProducts(updatedProducts);
+        setFeaturedCount(prev => currentValue ? prev + 1 : prev - 1);
+        toast.success(
+          currentValue 
+            ? 'Product added to featured section' 
+            : 'Product removed from featured section'
+        );
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update featured status');
+    }
+  };
+
+  // Add this useEffect to initialize featured count
+  useEffect(() => {
+    if (products.length > 0) {
+      const count = products.filter(p => p.featured).length;
+      setFeaturedCount(count);
+    }
+  }, [products]);
   
 
   return (
@@ -189,104 +284,157 @@ const ManageProducts = () => {
             </div>
           ) : (
             <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Full Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Half Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Veg/Non-Veg</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {filteredProducts.map(product => {
-                // Compute primary image from the media array if available, otherwise fallback to product.image
-                const primaryImage =
-                  product.media && product.media.length > 0
-                    ? product.media[0]
-                    : product.image;
-                return (
-                  <tr key={product._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="w-12 h-12 rounded-md overflow-hidden">
-                        <img
-                          src={primaryImage}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = 'https://via.placeholder.com/150?text=No+Image';
-                          }}
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Link to={`/menu/${product._id}`} className="flex items-center space-x-2">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white underline">
-                          {product.name}
-                        </div>
-                      </Link>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-white">
-                        ₹{product.price.toFixed(2)}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-white">
-                        {product.halfPrice ? (
-                          `₹${product.halfPrice.toFixed(2)}`
-                        ) : (
-                          <span className="text-gray-500 dark:text-gray-400 text-xs">Not available</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200">
-                        {product.category.charAt(0).toUpperCase() +
-                          product.category.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          product.vegornon?.toLowerCase() === 'veg'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-300'
-                            : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-300'
-                        }`}
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Order
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Image
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Name
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Full Price
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Half Price
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Category
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Veg/Non-Veg
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Actions
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Featured
+                      </th>
+                    </tr>
+                  </thead>
+                  <Droppable droppableId="products">
+                    {(provided) => (
+                      <tbody
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        className="divide-y divide-gray-200 dark:divide-gray-700"
                       >
-                        {product.vegornon
-                          ? product.vegornon.toLowerCase() === 'veg'
-                            ? 'Veg'
-                            : 'Non-Veg'
-                          : ''}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-lg font-medium">
-                      <button
-                        onClick={() => navigate(`/admin/edit-product/${product._id}`)}
-                        className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 mr-5"
-                        title="Edit Product"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteClick(product._id)}
-                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                        title="Delete Product"
-                      >
-                        <FaTrash />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-              </tbody>
-            </table>
-          </div>
+                        {orderedProducts.map((product, index) => (
+                          <Draggable key={product._id} draggableId={product._id} index={index}>
+                            {(provided, snapshot) => (
+                              <tr
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                className={`hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                                  snapshot.isDragging ? 'bg-gray-100 dark:bg-gray-600' : ''
+                                }`}
+                              >
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div
+                                    {...provided.dragHandleProps}
+                                    className="flex items-center justify-center cursor-move"
+                                  >
+                                    <GrDrag className="text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300" />
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="w-12 h-12 rounded-md overflow-hidden">
+                                    <img
+                                      src={product.media?.[0] || product.image}
+                                      alt={product.name}
+                                      className="w-full h-full object-cover"
+                                      onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = 'https://via.placeholder.com/150?text=No+Image';
+                                      }}
+                                    />
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <Link to={`/menu/${product._id}`} className="flex items-center space-x-2">
+                                    <div className="text-sm font-medium text-gray-900 dark:text-white underline">
+                                      {product.name}
+                                    </div>
+                                  </Link>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm text-gray-900 dark:text-white">
+                                    ₹{product.price.toFixed(2)}
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm text-gray-900 dark:text-white">
+                                    {product.halfPrice ? (
+                                      `₹${product.halfPrice.toFixed(2)}`
+                                    ) : (
+                                      <span className="text-gray-500 dark:text-gray-400 text-xs">Not available</span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200">
+                                    {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <span
+                                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                      product.vegornon?.toLowerCase() === 'veg'
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-300'
+                                        : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-300'
+                                    }`}
+                                  >
+                                    {product.vegornon?.toLowerCase() === 'veg' ? 'Veg' : 'Non-Veg'}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-lg font-medium">
+                                  <button
+                                    onClick={() => navigate(`/admin/edit-product/${product._id}`)}
+                                    className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 mr-5"
+                                    title="Edit Product"
+                                  >
+                                    <FaEdit />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteClick(product._id)}
+                                    className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                    title="Delete Product"
+                                  >
+                                    <FaTrash />
+                                  </button>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <Switch
+                                    checked={!!product.featured}
+                                    onChange={() => handleFeaturedToggle(product._id, !product.featured)}
+                                    className={`${
+                                      product.featured ? 'bg-gray-200' : 'bg-gray-200'
+                                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+                                  >
+                                    <span className="sr-only">Featured product</span>
+                                    <span
+                                      className={`${
+                                        product.featured ? 'translate-x-6 bg-green-400' : 'translate-x-1 bg-white dark:bg-gray-600'
+                                      } inline-block h-4 w-4 transform rounded-full  transition-transform`}
+                                    />
+                                  </Switch>
+                                </td>
+                              </tr>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </tbody>
+                    )}
+                  </Droppable>
+                </table>
+              </DragDropContext>
+            </div>
           )}
         </div>
       </motion.div>

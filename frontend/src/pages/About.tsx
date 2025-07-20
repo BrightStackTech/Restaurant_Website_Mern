@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaTimes, FaBriefcase, FaWhatsapp, FaEnvelope, FaGithub } from 'react-icons/fa';
+import { FaTimes, FaBriefcase, FaWhatsapp, FaEnvelope, FaGithub, FaGlobe } from 'react-icons/fa';
 
 const About = () => {
   const [showDevDialog, setShowDevDialog] = useState(false);
@@ -103,17 +103,17 @@ const About = () => {
             </button>
             <div className="flex flex-col items-center p-6">
               <img
-                src="https://res.cloudinary.com/domckasfk/image/upload/v1744755959/tzusm3fz2tpxevfke0ai.png"
+                src="https://res.cloudinary.com/dvb5mesnd/image/upload/v1751548127/zuuaqk790ruofaxwy9ol.png"
                 alt="BrightStack"
                 className="w-24 h-24 rounded-full object-cover mb-4"
               />
-              <h2 className="text-2xl font-bold mb-2 text-center text-black dark:text-white">Hi, call me BrightStack</h2>
+              <h2 className="text-2xl font-bold mb-2 text-center text-black dark:text-white">Hi, myself Yog</h2>
               <p className="italic text-gray-500 text-center mb-6">
-                A recently become graduate, fond of making amazing cool looking, dynamic websites using React.js, Node.js, Express.js and MongoDB. Currently unemployed and is in search for a Job.
+                A recent graduate, fond of making amazing cool looking, dynamic websites using React.js, Node.js, Express.js and MongoDB. Currently unemployed and is in search for a Job.
               </p>
               <div className="flex flex-col space-y-3 w-full">
                 <a
-                  href="https://www.upwork.com/freelancers/~019553adae7272fc11"
+                  href="https://www.upwork.com/freelancers/~015ce70c38026f389e"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center px-4 py-2 bg-black text-white rounded-md font-semibold hover:bg-gray-900 transition"
@@ -143,6 +143,14 @@ const About = () => {
                   className="flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md font-semibold hover:bg-black transition"
                 >
                   <FaGithub className="mr-2" /> Check my github repositories?
+                </a>
+                <a
+                  href="https://yog-vasaikar-portfolio.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md font-semibold hover:bg-black transition"
+                >
+                  <FaGlobe className="mr-2" /> Check my Portfolio Website?
                 </a>
               </div>
             </div>

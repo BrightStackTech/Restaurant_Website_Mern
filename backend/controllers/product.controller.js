@@ -22,6 +22,10 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('All fields are required', 400));
   }
 
+  // Get the highest order value
+  const highestOrder = await Product.findOne().sort({ order: -1 }).select('order');
+  const nextOrder = (highestOrder?.order || -1) + 1;
+
   // Convert halfPrice to number or null
   const convertedHalfPrice = halfPrice ? Number(halfPrice) : null;
 
@@ -32,7 +36,8 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     halfPrice: convertedHalfPrice,
     vegornon,
     category,
-    media: mediaUrls
+    media: mediaUrls,
+    order: nextOrder // Set the order to next available number
   });
 
   res.status(201).json({
@@ -141,3 +146,44 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
     data: {}
   });
 }); 
+
+exports.updateProductsOrder = catchAsync(async (req, res, next) => {
+  const { updates } = req.body; // Array of { id, order }
+
+  for (let update of updates) {
+    await Product.findByIdAndUpdate(update.id, { order: update.order });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Products reordered successfully'
+  });
+});
+
+exports.toggleFeatured = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const { featured } = req.body;
+
+  // If trying to set featured to true, check current count
+  if (featured) {
+    const featuredCount = await Product.countDocuments({ featured: true });
+    if (featuredCount >= 4) {
+      return next(new AppError('Maximum 4 products can be featured', 400));
+    }
+  }
+
+  const product = await Product.findByIdAndUpdate(
+    id,
+    { featured },
+    { new: true, runValidators: true }
+  );
+
+  if (!product) {
+    return next(new AppError('Product not found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: product
+  });
+});

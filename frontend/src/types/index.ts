@@ -22,6 +22,8 @@ export interface UserRegisterData {
 
 // Product related types
 export interface Product {
+  featured: unknown;
+  order: number;
   _id: string;
   name: string;
   description: string;

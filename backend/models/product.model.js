@@ -49,6 +49,14 @@ const productSchema = new mongoose.Schema({
     ref: 'Review',
     default: []
   },
+  order: {
+    type: Number,
+    default: 0
+  },
+  featured: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

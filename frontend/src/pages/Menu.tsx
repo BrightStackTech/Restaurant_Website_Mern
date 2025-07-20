@@ -28,17 +28,37 @@ const Menu = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
   // Defaults: no filter for category and veg
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedVeg, setSelectedVeg] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    localStorage.getItem('menuSelectedCategory') || 'all'
+  );
+  const [selectedVeg, setSelectedVeg] = useState<string>(
+    localStorage.getItem('menuSelectedVeg') || 'all'
+  );
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    localStorage.setItem('menuSelectedCategory', category);
+  };
+
+  const handleVegChange = (option: any) => {
+    const value = option?.value || 'all';
+    setSelectedVeg(value);
+    localStorage.setItem('menuSelectedVeg', value);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const response = await getAllProducts();
-        const data = response.data || [];
-        setProducts(data);
-        setFilteredProducts(data);
+        if (response.success && response.data) {
+          // Sort products by order field
+          const sortedProducts = [...response.data].sort((a, b) => (a.order || 0) - (b.order || 0));
+          setProducts(sortedProducts);
+          setFilteredProducts(sortedProducts);
+        } else {
+          toast.error('Failed to load menu items');
+        }
       } catch (error) {
         console.error('Error fetching products:', error);
         toast.error('Failed to load menu items');
@@ -51,7 +71,7 @@ const Menu = () => {
   }, []);
 
   useEffect(() => {
-    let filtered = products;
+    let filtered = [...products]; // Create a copy to maintain original order
 
     // Filter by category if not "all"
     if (selectedCategory !== 'all') {
@@ -81,6 +101,7 @@ const Menu = () => {
       );
     }
 
+    // No need to sort again as we maintain the original sorted order
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory, selectedVeg, products]);
 
@@ -143,7 +164,7 @@ const Menu = () => {
           {/* Category Buttons */}
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => handleCategoryChange('all')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               selectedCategory === 'all'
                 ? 'bg-orange-500 text-white'
@@ -155,7 +176,7 @@ const Menu = () => {
           {categoryOptions.map((option) => (
             <button
               key={option.value}
-              onClick={() => setSelectedCategory(option.value)}
+              onClick={() => handleCategoryChange(option.value)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 selectedCategory === option.value
                   ? 'bg-orange-500 text-white'
@@ -171,7 +192,7 @@ const Menu = () => {
         <div className="w-48">
           <Select
             value={vegOptions.find(option => option.value === selectedVeg)}
-            onChange={(option) => setSelectedVeg(option?.value || 'all')}
+            onChange={handleVegChange}
             options={vegOptions}
             placeholder="Veg / Non-Veg"
             classNamePrefix="react-select"
