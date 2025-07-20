@@ -23,7 +23,6 @@ const ManageProducts = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const [orderedProducts, setOrderedProducts] = useState<Product[]>([]);
-  const [featuredCount, setFeaturedCount] = useState(0);
   const navigate = useNavigate();
 
   // Mock data for categories - replace with actual categories if needed
@@ -164,7 +163,6 @@ const ManageProducts = () => {
         );
         setOrderedProducts(updatedProducts);
         setProducts(updatedProducts);
-        setFeaturedCount(prev => currentValue ? prev + 1 : prev - 1);
         toast.success(
           currentValue 
             ? 'Product added to featured section' 
@@ -176,14 +174,6 @@ const ManageProducts = () => {
     }
   };
 
-  // Add this useEffect to initialize featured count
-  useEffect(() => {
-    if (products.length > 0) {
-      const count = products.filter(p => p.featured).length;
-      setFeaturedCount(count);
-    }
-  }, [products]);
-  
 
   return (
     <div className="container mx-auto px-4 py-8 mt-12">

@@ -107,11 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   checked={isFullPortion}
                   onChange={(e) => setIsFullPortion(e.target.checked)}
                 />
-<<<<<<< HEAD
-                <div className="flex items-center bg-gray-300/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-sm border border-gray-700/50 dark:border-gray-600/50 w-[95px] h-[30px]">
-=======
-                <div className="flex items-center bg-gray-300/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-lg border border-gray-700/50 dark:border-gray-600/50 w-[95px] h-[30px]">
->>>>>>> 667513c (message)
+                <div className="flex items-center bg-gray-300/90 dark:bg-gray-700/90 backdrop-blur-sm rounded-full relative shadow-sm border border-gray-200 dark:border-gray-600 w-[86px] h-[30px] overflow-hidden">
                   <div
                     className={`absolute h-[26px] rounded-full transition-all duration-300 shadow-sm bg-gradient-to-b from-primary to-primary/90`}
                     style={{
