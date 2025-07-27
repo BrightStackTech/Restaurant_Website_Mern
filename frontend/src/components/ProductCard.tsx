@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaStar, FaArrowRight } from 'react-icons/fa';
-import { Product, Rating } from '../types';
+import { Product, Rating, Review } from '../types';
 import { useState } from 'react';
 
 // Define a union type that accommodates both formats
@@ -20,7 +20,7 @@ type ProductCardType = (Product | {
   category?: string;
   vegornon?: string;
   ratingvalue?: number;
-}) & { ratings?: Rating[] };
+}) & { ratings?: Rating[], reviews?: Review[] };
 
 interface ProductCardProps {
   product: ProductCardType;
@@ -145,7 +145,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex items-center">
             <FaStar className="text-yellow-400 mr-1" />
             <span>{product.ratingvalue?.toFixed(1)} </span>
-            <span className="text-gray-500 text-sm ml-1">({product.ratings?.length || 0} ratings)</span>
+              <span className="text-gray-500 text-sm ml-1">({product.reviews?.length || 0} reviews)</span>
           </div>
 
           {linkToDetail ? (
@@ -157,9 +157,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <FaArrowRight size={12} />
             </Link>
           ) : (
-            <button className="btn btn-primary text-sm px-3 py-1">
-              Add to Cart
-            </button>
+              ''
           )}
         </div>
       </div>
