@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaTimes } from 'react-icons/fa';
 import { getAllProducts } from '../api/products.service';
 import { toast } from 'react-hot-toast';
 import ProductCard from '../components/ProductCard';
@@ -27,6 +27,7 @@ const Menu = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showMenuCard, setShowMenuCard] = useState(false);
   // Defaults: no filter for category and veg
   const [selectedCategory, setSelectedCategory] = useState<string>(
     localStorage.getItem('menuSelectedCategory') || 'all'
@@ -34,6 +35,7 @@ const Menu = () => {
   const [selectedVeg, setSelectedVeg] = useState<string>(
     localStorage.getItem('menuSelectedVeg') || 'all'
   );
+  const [currentPage, setCurrentPage] = useState<'veg' | 'non-veg'>('veg');
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -69,6 +71,18 @@ const Menu = () => {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    if (showMenuCard) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showMenuCard]);
 
   useEffect(() => {
     let filtered = [...products]; // Create a copy to maintain original order
@@ -235,7 +249,13 @@ const Menu = () => {
               }),
             }}
           />
-        </div>
+          </div>
+          <button 
+            className='btn btn-primary'
+            onClick={() => setShowMenuCard(true)}
+          >
+            OR use Traditional Menu Card
+          </button>
     </motion.div>
 
         {/* Products */}
@@ -274,6 +294,59 @@ const Menu = () => {
             ))}
           </motion.div>
         )}
+      {showMenuCard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div 
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setShowMenuCard(false)}
+          />
+          <div className="relative w-full md:h-[90vh] h-[75vh] max-w-4xl mx-4 bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+            <button
+              onClick={() => setShowMenuCard(false)}
+              className="absolute md:top-4 md:right-4 top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors z-10"
+              aria-label="Close menu card"
+            >
+              <FaTimes className="w-6 h-6" />
+            </button>
+
+            {/* Flip Page Button - Mobile Only */}
+            <button
+              onClick={() => setCurrentPage(current => current === 'veg' ? 'non-veg' : 'veg')}
+              className="md:hidden absolute bottom-4 right-4 btn btn-primary z-10 "
+            >
+              Flip to {currentPage === 'veg' ? 'Non-Veg' : 'Veg'} Menu
+            </button>
+
+            <div className="md:h-full h-[70vh] p-4 flex flex-col">
+              <h2 className="md:text-2xl text-xl font-bold dark:text-white text-center ">
+                Traditional Menu Card
+              </h2>
+              <div className="flex-1 flex flex-col md:flex-row gap-4 justify-center items-center">
+                {/* Veg Menu Page */}
+                <div className={`w-full md:w-1/2 md:h-[75vh] h-[55vh] bg-gray-100 dark:bg-gray-700 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 overflow-hidden
+                  ${currentPage === 'veg' ? 'block' : 'hidden md:block'}`}>
+                  <img 
+                    src="https://res.cloudinary.com/dvb5mesnd/image/upload/v1753643002/veg_menu_chwsxi.jpg" 
+                    alt="Veg Menu"
+                    className="w-full h-full object-contain rounded-lg"
+                    loading="lazy"
+                  />
+                </div>
+                {/* Non-Veg Menu Page */}
+                <div className={`w-full md:w-1/2 md:h-[75vh] h-[55vh] bg-gray-100 dark:bg-gray-700 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 overflow-hidden
+                  ${currentPage === 'non-veg' ? 'block' : 'hidden md:block'}`}>
+                  <img 
+                    src="https://res.cloudinary.com/dvb5mesnd/image/upload/v1753643002/nonveg_menu_we7gyb.jpg" 
+                    alt="Non-Veg Menu"
+                    className="w-full h-full object-contain rounded-lg"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </motion.div>
   );
