@@ -82,7 +82,7 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/tastehub.git
+git clone https://github.com/BrightStackTech/Restaurant_Website_Mern.git
 cd tastehub
 ```
 
