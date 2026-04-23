@@ -2,6 +2,14 @@
 
 A full-stack restaurant website built with the MERN stack (MongoDB, Express, React, Node.js) with TypeScript and TailwindCSS. The site allows users to view menu items, leave reviews with ratings, and includes admin functionality to manage products and content.
 
+### Live Link
+
+👉 [Varad Vinayak Chinese](https://varadvinayakchinese.vercel.app/)  <br/>
+
+<img width="1918" height="967" alt="Screenshot 2026-04-23 203159" src="https://github.com/user-attachments/assets/eaadcaaa-6863-4829-a7b7-584ce2b6e025" /> <br/>
+
+---
+
 ## Features
 
 - **User Authentication**: Register, login, and manage user profiles
